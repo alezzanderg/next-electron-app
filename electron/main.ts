@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, Menu } from 'electron';
 import * as path from 'path';
 import { isDev } from './util';
 
@@ -7,6 +7,12 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     height: 800,
     width: 1200,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#18181b', // Match the zinc-900 background
+      symbolColor: '#ffffff', // White symbols
+      height: 32
+    },
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -32,7 +38,11 @@ function createWindow(): void {
 }
 
 // This method will be called when Electron has finished initialization
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  // Remove the default menu
+  Menu.setApplicationMenu(null);
+  createWindow();
+});
 
 // Quit when all windows are closed, except on macOS
 app.on('window-all-closed', () => {
